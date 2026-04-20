@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>凡人修仙录 - 文字修仙MUD</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <header id="game-header">
+            <h1>凡人修仙录</h1>
+            <div id="time-display"></div>
+            <div id="game-controls" style="display: none;">
+                <button id="save-btn" class="btn btn-warning" style="padding: 5px 15px; font-size: 12px;">💾 存档</button>
+                <button id="quit-btn" class="btn btn-danger" style="padding: 5px 15px; font-size: 12px;">🚪 退出</button>
+            </div>
+        </header>
+        <main id="game-main">
+            <div id="sidebar-left" class="sidebar">
+                <div id="player-stats-panel" class="panel"></div>
+                <div id="sidebar-buttons" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                    <button id="character-btn" class="btn btn-warning">👤 角色信息</button>
+                    <button id="map-btn" class="btn btn-primary">🗺️ 地图</button>
+                    <button id="dungeon-btn" class="btn btn-primary">🏔️ 秘境</button>
+                    <button id="inventory-btn" class="btn btn-primary">🎒 背包</button>
+                    <button id="skill-btn" class="btn btn-primary">⚡ 技能</button>
+                    <button id="acquaintance-btn" class="btn btn-primary">👥 熟人</button>
+                </div>
+            </div>
+            <div id="game-content">
+                <div id="scene-description"></div>
+                <div id="action-buttons"></div>
+                <div id="message-log"></div>
+            </div>
+            <div id="sidebar-right" class="sidebar">
+                <div id="monster-panel"></div>
+                <div id="quest-panel"></div>
+            </div>
+        </main>
+    </div>
+    
+    <div id="map-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 700px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>地图导航</h2>
+                <button id="close-map-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+            </div>
+            <div id="map-modal-content"></div>
+        </div>
+    </div>
+    
+    <div id="inventory-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 800px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>背包</h2>
+                <span id="inventory-gold" style="color: #fbbf24; font-weight: bold;"></span>
+                <button id="close-inventory-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+            </div>
+            <div>
+                <h3 style="color: #a78bfa; margin-bottom: 10px;">装备栏</h3>
+                <div id="equipment-container" style="margin-bottom: 20px;"></div>
+                <h3 style="color: #f59e0b; margin-bottom: 10px;">装备背包</h3>
+                <div id="equipment-bag-container" style="margin-bottom: 20px;"></div>
+                <h3 style="color: #fbbf24; margin-bottom: 10px;">功法书籍</h3>
+                <div id="book-bag-container" style="margin-bottom: 20px;"></div>
+                <h3 style="color: #a855f7; margin-bottom: 10px;">炼丹配方</h3>
+                <div id="recipe-bag-container" style="margin-bottom: 20px;"></div>
+                <h3 style="color: #60a5fa; margin-bottom: 10px;">物品</h3>
+                <div id="inventory-modal-content"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="skill-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>已学技能</h2>
+                <button id="close-skill-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+            </div>
+            <div id="skill-modal-content"></div>
+        </div>
+    </div>
+    
+    <div id="dungeon-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>秘境探险</h2>
+                <button id="close-dungeon-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+            </div>
+            <div id="dungeon-modal-content"></div>
+        </div>
+    </div>
+    
+    <div id="sanxiu-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 800px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>散修功法</h2>
+                <button id="close-sanxiu-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+            </div>
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <h3 style="color: #fbbf24; margin-bottom: 15px;">主动技能</h3>
+                    <div id="sanxiu-active-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+                <div style="flex: 1;">
+                    <h3 style="color: #34d399; margin-bottom: 15px;">被动功法</h3>
+                    <div id="sanxiu-passive-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="quest-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 id="quest-modal-title">门派任务</h2>
+                <button id="close-quest-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+            </div>
+            <div id="quest-modal-content"></div>
+        </div>
+    </div>
+    
+    <div id="shop-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 700px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 id="shop-title">商店</h2>
+                <span id="shop-gold" style="color: #fbbf24; font-weight: bold;"></span>
+                <button id="close-shop-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+            </div>
+            <div id="shop-description" style="color: #9ca3af; margin-bottom: 15px;"></div>
+            <div id="shop-modal-content"></div>
+        </div>
+    </div>
+    <div id="start-screen" class="modal">
+        <div class="modal-content">
+            <h1>凡人修仙录</h1>
+            <p>轮回百炼，逆天改命</p>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button id="start-btn" class="btn btn-primary">开始修仙</button>
+                <button id="continue-btn" class="btn btn-success" style="display: none;">继续游戏</button>
+            </div>
+        </div>
+    </div>
+    <div id="character-creation" class="modal hidden">
+        <div class="modal-content" style="max-width: 900px;">
+            <div style="margin-bottom: 20px; text-align: center;">
+                <h3 style="color: #fbbf24; margin-bottom: 10px;">角色名称</h3>
+                <input type="text" id="player-name-input" placeholder="请输入你的名字（2-10字）" 
+                    style="width: 300px; padding: 12px 20px; font-size: 16px; border: 2px solid #4c1d95; border-radius: 8px; background: rgba(0,0,0,0.5); color: #fbbf24; text-align: center;">
+            </div>
+            <div class="creation-steps">
+                <div class="step active" data-step="1">
+                    <h2>第一步：选择身世</h2>
+                    <div class="step-content" id="birth-options"></div>
+                </div>
+                <div class="step hidden" data-step="2">
+                    <h2>第二步：选择籍贯</h2>
+                    <div class="step-content" id="native-place-options"></div>
+                </div>
+                <div class="step hidden" data-step="3">
+                    <h2>第三步：选择性格</h2>
+                    <div class="step-content" id="personality-options"></div>
+                </div>
+            </div>
+            <div class="creation-buttons" style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+                <button id="prev-step" class="btn btn-secondary" style="display: none;">上一步</button>
+                <button id="next-step" class="btn btn-primary" disabled>下一步</button>
+                <button id="confirm-creation" class="btn btn-success" style="display: none;">开始修仙</button>
+            </div>
+        </div>
+    </div>
+    <div id="character-confirmation" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <h2>角色属性确认</h2>
+            <div id="character-stats-preview"></div>
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px;">
+                <button id="confirm-character-btn" class="btn btn-success">✅ 确认开始</button>
+                <button id="back-to-creation-btn" class="btn btn-secondary">🔙 返回重选</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="combat-screen" class="modal hidden">
+        <div class="modal-content" style="max-width: 700px;">
+            <h2 style="text-align: center; margin-bottom: 20px;">⚔️ 战斗</h2>
+            
+            <div style="display: flex; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+                <div style="flex: 1; background: rgba(34, 197, 94, 0.1); padding: 15px; border-radius: 10px; text-align: center;">
+                    <h3 style="color: #22c55e; margin-bottom: 10px;">你</h3>
+                    <div id="combat-player-hp" style="font-size: 18px; font-weight: bold; color: #22c55e;"></div>
+                    <div id="combat-player-mp" style="font-size: 16px; color: #3b82f6; margin-top: 5px;"></div>
+                </div>
+                <div style="flex: 1; background: rgba(239, 68, 68, 0.1); padding: 15px; border-radius: 10px; text-align: center;">
+                    <h3 id="combat-monster-name" style="color: #ef4444; margin-bottom: 10px;">怪物</h3>
+                    <div id="combat-monster-hp" style="font-size: 18px; font-weight: bold; color: #ef4444;"></div>
+                    <div id="combat-monster-realm" style="font-size: 14px; color: #9ca3af; margin-top: 5px;"></div>
+                </div>
+            </div>
+            
+            <div style="background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 10px; max-height: 200px; overflow-y: auto; margin-bottom: 20px;">
+                <div id="combat-log" style="color: #d1d5db;"></div>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <h4 style="color: #fbbf24; margin-bottom: 10px;">技能</h4>
+                <div id="combat-skills" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <h4 style="color: #fbbf24; margin-bottom: 10px;">基础操作</h4>
+                <div id="combat-actions" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;"></div>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <h4 style="color: #fbbf24; margin-bottom: 10px;">快捷键 (1-8)</h4>
+                <div id="combat-hotkeys" style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px;">
+                    <div class="hotkey-slot" data-slot="1"><span>1</span><div class="hotkey-skill"></div></div>
+                    <div class="hotkey-slot" data-slot="2"><span>2</span><div class="hotkey-skill"></div></div>
+                    <div class="hotkey-slot" data-slot="3"><span>3</span><div class="hotkey-skill"></div></div>
+                    <div class="hotkey-slot" data-slot="4"><span>4</span><div class="hotkey-skill"></div></div>
+                    <div class="hotkey-slot" data-slot="5"><span>5</span><div class="hotkey-skill"></div></div>
+                    <div class="hotkey-slot" data-slot="6"><span>6</span><div class="hotkey-skill"></div></div>
+                    <div class="hotkey-slot" data-slot="7"><span>7</span><div class="hotkey-skill"></div></div>
+                    <div class="hotkey-slot" data-slot="8"><span>8</span><div class="hotkey-skill"></div></div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button id="combat-heal-btn" class="btn btn-primary">🧪 使用回春丹</button>
+                <button id="combat-mana-btn" class="btn btn-primary">✨ 使用聚灵散</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="adventure-screen" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <h2 id="adventure-title" style="text-align: center; color: #fbbf24; margin-bottom: 15px;"></h2>
+            <p id="adventure-description" style="color: #d1d5db; line-height: 1.8; margin-bottom: 20px; text-align: center;"></p>
+            
+            <div id="adventure-rewards" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 20px;"></div>
+            
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button id="adventure-accept-btn" class="btn btn-success">✨ 接受</button>
+                <button id="adventure-reject-btn" class="btn btn-secondary">❌ 拒绝</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="death-screen" class="modal hidden">
+        <div class="modal-content">
+            <h1>魂归天地</h1>
+            <div id="death-info"></div>
+            <button id="reincarnate-btn" class="btn btn-primary">轮回转世</button>
+        </div>
+    </div>
+    <div id="victory-screen" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <h1 style="color: #22c55e;">⚔️ 战斗胜利</h1>
+            <div id="victory-content" style="margin-top: 20px;"></div>
+            <button id="victory-continue-btn" class="btn btn-success" style="margin-top: 20px; width: 100%; padding: 12px 30px;">继续</button>
+        </div>
+    </div>
+    <div id="npc-dialog" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="npc-name"></h2>
+            <div id="npc-dialog-content"></div>
+            <div id="npc-actions"></div>
+        </div>
+    </div>
+    
+    <div id="breakthrough-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: #fbbf24;">⚡ 境界突破</h2>
+                <button id="close-breakthrough-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+            </div>
+            <div id="breakthrough-content"></div>
+        </div>
+    </div>
+    <div id="battle-screen" class="modal hidden">
+        <div class="modal-content" style="max-width: 800px;">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #fbbf24;">⚔️ 战斗</h2>
+            
+            <div style="display: flex; justify-content: space-between; gap: 15px; margin-bottom: 15px;">
+                <div style="flex: 1; background: rgba(34, 197, 94, 0.15); padding: 12px; border-radius: 8px; border: 2px solid #22c55e;">
+                    <h3 style="color: #22c55e; margin-bottom: 10px; text-align: center; font-size: 14px;">你</h3>
+                    <div class="stat-bar" style="margin-bottom: 8px; font-size: 12px;">
+                        <label>气血:</label>
+                        <div class="bar"><div id="battle-player-hp-fill" class="fill" style="width: 100%; background: linear-gradient(90deg, #22c55e, #16a34a);"></div></div>
+                        <span id="battle-player-hp-text"></span>
+                    </div>
+                    <div class="stat-bar" style="font-size: 12px;">
+                        <label>灵力:</label>
+                        <div class="bar"><div id="battle-player-mp-fill" class="fill" style="width: 100%; background: linear-gradient(90deg, #3b82f6, #1d4ed8);"></div></div>
+                        <span id="battle-player-mp-text"></span>
+                    </div>
+                    <div style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div style="text-align: center; padding: 6px; background: rgba(239, 68, 68, 0.2); border-radius: 4px;">
+                            <div style="color: #9ca3af; font-size: 10px;">攻击</div>
+                            <div id="battle-player-attack" style="color: #ef4444; font-weight: bold; font-size: 12px;"></div>
+                        </div>
+                        <div style="text-align: center; padding: 6px; background: rgba(59, 130, 246, 0.2); border-radius: 4px;">
+                            <div style="color: #9ca3af; font-size: 10px;">防御</div>
+                            <div id="battle-player-defense" style="color: #3b82f6; font-weight: bold; font-size: 12px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; font-size: 24px; color: #fbbf24;">
+                    ⚔️
+                </div>
+                
+                <div style="flex: 1;">
+                    <h3 style="color: #ef4444; margin-bottom: 10px; text-align: center; font-size: 14px;">敌人</h3>
+                    <div id="battle-enemies-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px;"></div>
+                </div>
+            </div>
+            
+            <div style="background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 10px; max-height: 150px; overflow-y: auto; margin-bottom: 20px;">
+                <div id="battle-log" style="color: #d1d5db;"></div>
+            </div>
+            
+            <div id="battle-actions-container" style="display: flex; flex-direction: column; gap: 15px;">
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <h4 style="color: #fbbf24; margin-bottom: 10px; font-size: 14px;">基础攻击</h4>
+                        <div id="battle-actions" style="display: grid; grid-template-columns: 1fr; gap: 8px;"></div>
+                    </div>
+                    <div style="flex: 1;">
+                        <h4 style="color: #fbbf24; margin-bottom: 10px; font-size: 14px;">技能</h4>
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 8px;">
+                            <button id="battle-skill-menu-btn" class="btn btn-primary" style="padding: 10px;">📜 技能菜单</button>
+                            <div id="battle-escape-container"></div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 style="color: #fbbf24; margin-bottom: 10px; font-size: 14px;">快捷键 (1-8)</h4>
+                    <div id="battle-hotkeys" style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px;">
+                        <div class="hotkey-slot" data-slot="1"><span>1</span><div class="hotkey-skill"></div></div>
+                        <div class="hotkey-slot" data-slot="2"><span>2</span><div class="hotkey-skill"></div></div>
+                        <div class="hotkey-slot" data-slot="3"><span>3</span><div class="hotkey-skill"></div></div>
+                        <div class="hotkey-slot" data-slot="4"><span>4</span><div class="hotkey-skill"></div></div>
+                        <div class="hotkey-slot" data-slot="5"><span>5</span><div class="hotkey-skill"></div></div>
+                        <div class="hotkey-slot" data-slot="6"><span>6</span><div class="hotkey-skill"></div></div>
+                        <div class="hotkey-slot" data-slot="7"><span>7</span><div class="hotkey-skill"></div></div>
+                        <div class="hotkey-slot" data-slot="8"><span>8</span><div class="hotkey-skill"></div></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 技能选择模态框 -->
+            <div id="skill-select-modal" class="modal hidden">
+                <div class="modal-content" style="max-width: 600px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2>选择技能</h2>
+                        <button id="close-skill-select-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+                    </div>
+                    <div id="skill-select-content"></div>
+                </div>
+            </div>
+            
+            <!-- 快捷键设置模态框 -->
+            <div id="hotkey-set-modal" class="modal hidden">
+                <div class="modal-content" style="max-width: 600px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2>设置快捷键</h2>
+                        <button id="close-hotkey-set-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+                    </div>
+                    <div id="hotkey-set-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="battle-reward-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <div style="text-align: center;">
+                <h2 style="color: #fbbf24; margin-bottom: 20px;">战斗胜利！</h2>
+                <div id="battle-reward-content" style="margin-bottom: 20px;"></div>
+                <button id="close-battle-reward" class="btn btn-success" style="width: 100%; padding: 15px; font-size: 18px;">确定</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="character-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 700px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>角色信息</h2>
+                <button id="close-character-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+            </div>
+            <div id="character-modal-content"></div>
+        </div>
+    </div>
+    <div id="acquaintance-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>熟人列表</h2>
+                <button id="close-acquaintance-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+            </div>
+            <div id="acquaintance-modal-content"></div>
+        </div>
+    </div>
+    <div id="item-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 900px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 id="item-modal-title">物品详情</h2>
+                <button id="close-item-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+            </div>
+            <div id="item-modal-content"></div>
+        </div>
+    </div>
+    <div id="story-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 700px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 id="story-modal-title">剧情</h2>
+                <button id="close-story-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+            </div>
+            <div id="story-modal-content" style="line-height: 1.6;"></div>
+            <div id="story-modal-actions" style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;"></div>
+        </div>
+    </div>
+    <div id="alchemy-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 1000px; max-height: 80vh;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>炼丹房</h2>
+                <button id="close-alchemy-modal" class="btn btn-secondary" style="padding: 5px 15px;">✕</button>
+            </div>
+            <div id="alchemy-modal-content"></div>
+        </div>
+    </div>
+
+    <!-- ===================== 手机端浮动菜单 ===================== -->
+    <div id="mobile-float-menu">
+        <!-- 底部快捷栏 -->
+        <div class="mobile-bottom-bar">
+            <button class="mobile-bottom-btn" onclick="toggleSidebar('left')">
+                <span class="icon">👤</span>
+                <span class="text">角色</span>
+            </button>
+            <button class="mobile-bottom-btn" onclick="ui.showMapModal()">
+                <span class="icon">🗺️</span>
+                <span class="text">地图</span>
+            </button>
+            <button class="mobile-bottom-btn" onclick="ui.showInventoryModal()">
+                <span class="icon">🎒</span>
+                <span class="text">背包</span>
+            </button>
+            <button class="mobile-bottom-btn" onclick="ui.showSkillModal()">
+                <span class="icon">⚡</span>
+                <span class="text">技能</span>
+            </button>
+            <button class="mobile-bottom-btn" onclick="game.saveGame()">
+                <span class="icon">💾</span>
+                <span class="text">存档</span>
+            </button>
+        </div>
+
+        <!-- 悬浮菜单按钮 -->
+        <div class="mobile-menu-toggle" id="mobile-menu-toggle" onclick="toggleMobileMenu()">
+            ☰
+        </div>
+
+        <!-- 悬浮菜单项 -->
+        <div class="mobile-menu-items" id="mobile-menu-items">
+            <div class="mobile-menu-item" onclick="ui.showCharacterModal()">👤</div>
+            <div class="mobile-menu-item" onclick="ui.showMapModal()">🗺️</div>
+            <div class="mobile-menu-item" onclick="ui.showDungeonModal()">🏔️</div>
+            <div class="mobile-menu-item" onclick="ui.showInventoryModal()">🎒</div>
+            <div class="mobile-menu-item" onclick="ui.showSkillModal()">⚡</div>
+            <div class="mobile-menu-item" onclick="toggleSidebar('right')">👥</div>
+            <div class="mobile-menu-item" onclick="game.saveGame()">💾</div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/npc-interaction.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+    <script>
+        // ===================== 手机端菜单功能 =====================
+        
+        // 切换侧边栏显示
+        function toggleSidebar(side) {
+            const sidebar = document.getElementById(`sidebar-${side}`);
+            if (sidebar) {
+                sidebar.classList.toggle('show');
+            }
+        }
+        
+        // 切换浮动菜单显示
+        let mobileMenuOpen = false;
+        function toggleMobileMenu() {
+            mobileMenuOpen = !mobileMenuOpen;
+            const menuItems = document.getElementById('mobile-menu-items');
+            const toggleBtn = document.getElementById('mobile-menu-toggle');
+            
+            if (mobileMenuOpen) {
+                menuItems.classList.add('show');
+                toggleBtn.textContent = '✕';
+            } else {
+                menuItems.classList.remove('show');
+                toggleBtn.textContent = '☰';
+            }
+        }
+        
+        // 点击页面其他地方关闭菜单
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('mobile-float-menu');
+            if (mobileMenuOpen && !menu.contains(e.target)) {
+                toggleMobileMenu();
+            }
+        });
+        
+        // 检测是否为移动设备
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                || window.innerWidth <= 768;
+        }
+        
+        // 页面加载时的处理
+        document.addEventListener('DOMContentLoaded', function() {
+            // 如果是移动设备，调整一些默认设置
+            if (isMobileDevice()) {
+                console.log('检测到移动设备，应用手机端优化');
+            }
+        });
+    </script>
+</body>
+</html>
