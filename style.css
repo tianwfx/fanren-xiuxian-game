@@ -1626,4 +1626,168 @@ input {
         grid-template-columns: 1fr !important;
         gap: 5px !important;
     }
+    /* ========== 微信/手机端全局适配 ========== */
+html, body {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: #1a1a2e;
+  color: #fff;
+  font-family: sans-serif;
+  /* 禁用微信长按菜单和文本选中 */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 微信安全区域适配 */
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ========== 顶部标题栏优化 ========== */
+.game-header {
+  width: 100%;
+  padding: calc(env(safe-area-inset-top) + 10px) 15px 15px;
+  background: #16213e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  box-sizing: border-box;
+}
+.game-header h1 {
+  font-size: 22px;
+  margin: 0;
+}
+.game-header .btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  color: #fff;
+}
+.game-header .save-btn {
+  background: #ff9500;
+}
+.game-header .exit-btn {
+  background: #ff3b30;
+}
+
+/* ========== 角色信息面板优化 ========== */
+.player-panel {
+  margin: 10px 15px;
+  padding: 15px;
+  background: #0f0f23;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+.player-panel .player-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.player-panel .level-info {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+.stat-bar {
+  height: 14px;
+  margin: 10px 0;
+  background: #333;
+  border-radius: 7px;
+  overflow: hidden;
+}
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 7px;
+}
+.stat-bar-fill.hp {
+  background: #34c759;
+}
+.stat-bar-fill.mp {
+  background: #007aff;
+}
+.stat-label {
+  font-size: 16px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* ========== 场景描述与操作按钮优化 ========== */
+.scene-container {
+  margin: 10px 15px;
+  padding: 15px;
+  background: #0f0f23;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+.scene-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ffcc00;
+}
+.scene-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: #ccc;
+}
+.action-btn {
+  display: block;
+  width: 100%;
+  height: 60px;
+  margin: 12px 0;
+  padding: 0 15px;
+  font-size: 18px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7209b7, #3a0ca3);
+  color: #fff;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.action-btn:active {
+  opacity: 0.8;
+}
+
+/* ========== 底部导航栏优化 ========== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 75px;
+  padding: 8px 0 calc(env(safe-area-inset-bottom) + 8px);
+  background: #16213e;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-sizing: border-box;
+}
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+}
+.nav-btn-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.1);
+  border-radius: 8px;
+}
 }
