@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>凡人修仙录 - 文字修仙MUD</title>
-    <link rel="stylesheet" href="css/style.css?v=20250422">
+    <link rel="stylesheet" href="css/style.css?v=20250425">
     <style>
-        /* ============== 手机端强制样式（直接嵌入HTML）============== */
-        @media (max-width: 768px) {
-            /* 强制三栏变单栏 */
+        @media (max-width: 768px) and (orientation: portrait) {
             html body #app #game-main {
                 flex-direction: column !important;
                 display: flex !important;
@@ -16,7 +14,6 @@
                 overflow: visible !important;
             }
             
-            /* 强制隐藏侧边栏 */
             html body #app #sidebar-left,
             html body #app #sidebar-right {
                 display: none !important;
@@ -28,27 +25,23 @@
                 display: block !important;
             }
             
-            /* 强制游戏内容占满 */
             html body #app #game-content {
                 flex: none !important;
                 width: 100% !important;
-                padding: 5px !important;
+                padding: 12px !important;
             }
             
-            /* 强制按钮网格 */
             html body #app #action-buttons {
                 display: grid !important;
                 grid-template-columns: 1fr 1fr !important;
-                gap: 4px !important;
+                gap: 10px !important;
             }
             
-            /* 强制Header垂直 */
             html body #app #game-header {
                 flex-direction: column !important;
-                padding: 4px !important;
+                padding: 12px !important;
             }
             
-            /* 强制显示手机菜单 */
             html body #mobile-float-menu {
                 display: block !important;
                 position: fixed !important;
@@ -58,37 +51,29 @@
                 z-index: 9999 !important;
             }
             
-            /* 强制按钮尺寸 */
             html body .btn {
-                min-height: 34px !important;
-                font-size: 11px !important;
-                padding: 6px 10px !important;
+                min-height: 50px !important;
+                font-size: 15px !important;
+                padding: 12px 18px !important;
             }
             
-            /* 强制字体 */
             html body, html body p {
-                font-size: 11px !important;
+                font-size: 15px !important;
             }
             
             html body h2 {
-                font-size: 14px !important;
+                font-size: 20px !important;
             }
             
             html body h3 {
-                font-size: 12px !important;
+                font-size: 16px !important;
             }
         }
         
-        /* 超小屏幕额外优化 */
-        @media (max-width: 480px) {
+        @media (max-width: 480px) and (orientation: portrait) {
             html body #app #action-buttons {
                 grid-template-columns: 1fr !important;
-                gap: 3px !important;
-            }
-            
-            html body .btn {
-                font-size: 10px !important;
-                min-height: 30px !important;
+                gap: 8px !important;
             }
         }
     </style>
