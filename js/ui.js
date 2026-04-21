@@ -394,29 +394,13 @@ class UI {
         document.getElementById('reincarnate-btn').addEventListener('click', () => this.reincarnate());
         document.getElementById('save-btn').addEventListener('click', () => this.saveGame());
         document.getElementById('quit-btn').addEventListener('click', () => this.quitGame());
-        document.getElementById('character-btn').addEventListener('click', () => this.showCharacterModal());
         document.getElementById('close-character-modal').addEventListener('click', () => this.closeCharacterModal());
-        document.getElementById('map-btn').addEventListener('click', () => this.openMapModal());
-        document.getElementById('inventory-btn').addEventListener('click', () => this.openInventoryModal());
-        document.getElementById('close-map-modal').addEventListener('click', () => this.closeMapModal());
-        document.getElementById('close-inventory-modal').addEventListener('click', () => this.closeInventoryModal());
-        document.getElementById('map-modal').addEventListener('click', (e) => {
-            if (e.target.id === 'map-modal') {
-                this.closeMapModal();
-            }
-        });
-        document.getElementById('inventory-modal').addEventListener('click', (e) => {
-            if (e.target.id === 'inventory-modal') {
-                this.closeInventoryModal();
-            }
-        });
         document.getElementById('confirm-character-btn').addEventListener('click', () => this.confirmAndStartGame());
         document.getElementById('back-to-creation-btn').addEventListener('click', () => this.backToCharacterCreation());
         document.getElementById('combat-heal-btn').addEventListener('click', () => this.useHealingItemInCombat('回春丹'));
         document.getElementById('combat-mana-btn').addEventListener('click', () => this.useHealingItemInCombat('聚灵散'));
         document.getElementById('adventure-accept-btn').addEventListener('click', () => this.acceptAdventure());
         document.getElementById('adventure-reject-btn').addEventListener('click', () => this.rejectAdventure());
-        document.getElementById('skill-btn').addEventListener('click', () => this.openSkillModal());
         document.getElementById('close-skill-modal').addEventListener('click', () => this.closeSkillModal());
         document.getElementById('skill-modal').addEventListener('click', (e) => {
             if (e.target.id === 'skill-modal') {
@@ -472,16 +456,35 @@ class UI {
             }
         });
         
-        document.getElementById('dungeon-btn').addEventListener('click', () => {
-            this.showDungeonModal();
-        });
+        var dungeonBtn = document.getElementById('dungeon-btn');
+        if (dungeonBtn) {
+            dungeonBtn.addEventListener('click', () => {
+                this.showDungeonModal();
+            });
+        }
         
-        document.getElementById('acquaintance-btn').addEventListener('click', () => {
-            this.openAcquaintanceModal();
-        });
+        var acquaintanceBtn = document.getElementById('acquaintance-btn');
+        if (acquaintanceBtn) {
+            acquaintanceBtn.addEventListener('click', () => {
+                this.openAcquaintanceModal();
+            });
+        }
         
         document.getElementById('close-acquaintance-modal').addEventListener('click', () => {
             this.closeAcquaintanceModal();
+        });
+        
+        document.getElementById('close-map-modal').addEventListener('click', () => this.closeMapModal());
+        document.getElementById('close-inventory-modal').addEventListener('click', () => this.closeInventoryModal());
+        document.getElementById('map-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'map-modal') {
+                this.closeMapModal();
+            }
+        });
+        document.getElementById('inventory-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'inventory-modal') {
+                this.closeInventoryModal();
+            }
         });
         
         document.getElementById('close-item-modal').addEventListener('click', () => this.closeItemModal());
@@ -559,7 +562,10 @@ class UI {
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('game-controls').style.display = 'flex';
             document.getElementById('game-controls').style.gap = '10px';
-            document.getElementById('sidebar-buttons').style.display = 'flex';
+            var sidebarButtons = document.getElementById('sidebar-buttons');
+            if (sidebarButtons) {
+                sidebarButtons.style.display = 'flex';
+            }
             this.game.init();
             this.updateAll();
             
@@ -858,7 +864,10 @@ class UI {
         document.getElementById('start-screen').classList.add('hidden');
         document.getElementById('game-controls').style.display = 'flex';
         document.getElementById('game-controls').style.gap = '10px';
-        document.getElementById('sidebar-buttons').style.display = 'flex';
+        var sidebarButtons = document.getElementById('sidebar-buttons');
+        if (sidebarButtons) {
+            sidebarButtons.style.display = 'flex';
+        }
         this.updateAll();
         
         // 显示初始剧情（只有未完成任务1时才显示）
@@ -1645,6 +1654,10 @@ class UI {
         this.updateMapModal();
         document.getElementById('map-modal').classList.remove('hidden');
     }
+    
+    showMapModal() {
+        this.openMapModal();
+    }
 
     closeMapModal() {
         document.getElementById('map-modal').classList.add('hidden');
@@ -1712,6 +1725,10 @@ class UI {
     openInventoryModal() {
         this.updateInventoryModal();
         document.getElementById('inventory-modal').classList.remove('hidden');
+    }
+    
+    showInventoryModal() {
+        this.openInventoryModal();
     }
 
     closeInventoryModal() {
@@ -2310,6 +2327,10 @@ class UI {
         document.getElementById('skill-modal').classList.remove('hidden');
     }
     
+    showSkillModal() {
+        this.openSkillModal();
+    }
+    
     closeSkillModal() {
         document.getElementById('skill-modal').classList.add('hidden');
     }
@@ -2395,6 +2416,10 @@ class UI {
     openAcquaintanceModal() {
         this.updateAcquaintanceModal();
         document.getElementById('acquaintance-modal').classList.remove('hidden');
+    }
+    
+    showAcquaintanceModal() {
+        this.openAcquaintanceModal();
     }
     
     closeAcquaintanceModal() {
@@ -2696,13 +2721,19 @@ class UI {
                 `);
                 
                 setTimeout(() => {
-                    document.getElementById('sell-book-confirm')?.addEventListener('click', () => {
-                        this.closeStoryModal();
-                        this.sellBook(bookId, index, sellPrice);
-                    });
-                    document.getElementById('sell-book-cancel')?.addEventListener('click', () => {
-                        this.closeStoryModal();
-                    });
+                    var sellBookConfirm = document.getElementById('sell-book-confirm');
+                    if (sellBookConfirm) {
+                        sellBookConfirm.addEventListener('click', () => {
+                            this.closeStoryModal();
+                            this.sellBook(bookId, index, sellPrice);
+                        });
+                    }
+                    var sellBookCancel = document.getElementById('sell-book-cancel');
+                    if (sellBookCancel) {
+                        sellBookCancel.addEventListener('click', () => {
+                            this.closeStoryModal();
+                        });
+                    }
                 }, 0);
             });
             
@@ -3497,30 +3528,22 @@ class UI {
             console.log('当前区域没有npcs字段或npcs不是一个数组');
         }
         
-        // 怪物显示已移至右侧面板，不再在中间显示
-        // if (area.monsters && Array.isArray(area.monsters)) {
-        //     console.log('准备渲染怪物按钮，怪物列表:', area.monsters);
-        //     area.monsters.forEach(monsterId => {
-        //         console.log('正在处理怪物ID:', monsterId);
-        //         const monster = GAME_DATA.MONSTERS[monsterId];
-        //         console.log('找到的怪物:', monster);
-        //         if (monster) {
-        //             const btn = document.createElement('button');
-        //             btn.className = 'btn btn-danger';
-        //             btn.textContent = `挑战${monster.name}`;
-        //             btn.addEventListener('click', () => {
-        //                 this.startCombat(monsterId, 'wild');
-        //                 this.tryTriggerAdventure('monster');
-        //             });
-        //             container.appendChild(btn);
-        //             console.log('成功添加怪物按钮:', monster.name);
-        //         } else {
-        //             console.error('找不到怪物数据:', monsterId);
-        //         }
-        //     });
-        // } else {
-        //     console.log('当前区域没有monsters字段');
-        // }
+        // 怪物按钮
+        if (area.monsters && Array.isArray(area.monsters)) {
+            area.monsters.forEach(monsterId => {
+                const monster = GAME_DATA.MONSTERS[monsterId];
+                if (monster) {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn btn-danger';
+                    btn.textContent = `挑战${monster.name}`;
+                    btn.addEventListener('click', () => {
+                        this.startCombat(monsterId, 'wild');
+                        this.tryTriggerAdventure('monster');
+                    });
+                    container.appendChild(btn);
+                }
+            });
+        }
         
         if (area.gatherPoints) {
             const gatherPointNames = {
