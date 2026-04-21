@@ -8,8 +8,7 @@ class UI {
         this.game = game;
         this.checkForSave();
         this.bindEvents();
-        this.game.init();
-        this.updateAll();
+        // 不再自动初始化游戏和更新UI，等待用户选择
     }
 
     // 获取品质颜色
@@ -561,7 +560,19 @@ class UI {
             document.getElementById('game-controls').style.display = 'flex';
             document.getElementById('game-controls').style.gap = '10px';
             document.getElementById('sidebar-buttons').style.display = 'flex';
-            this.startGame();
+            this.game.init();
+            this.updateAll();
+            
+            // 显示初始剧情（只有未完成任务1时才显示）
+            const completedQuests = this.game.player.completedQuests || [];
+            const hasCompletedQuest1 = completedQuests.includes('qinglan-1');
+            
+            if (!hasCompletedQuest1) {
+                const self = this;
+                setTimeout(function() {
+                    self.showInitialStory();
+                }, 1000);
+            }
         }
     }
 
@@ -843,6 +854,7 @@ class UI {
     }
 
     startGame() {
+        this.game.init();
         document.getElementById('start-screen').classList.add('hidden');
         document.getElementById('game-controls').style.display = 'flex';
         document.getElementById('game-controls').style.gap = '10px';
