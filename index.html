@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>凡人修仙录 - 文字修仙MUD</title>
-    <link rel="stylesheet" href="css/style.css?v=20250430">
+    <link rel="stylesheet" href="css/style.css?v=20250502">
     <style>
         @media (max-width: 768px) and (orientation: portrait) {
             html body #app #game-main {
@@ -20,7 +20,7 @@
                 width: 100% !important;
                 padding: 2px !important;
                 overflow-y: auto !important;
-                padding-bottom: 42px !important;
+                padding-bottom: 52px !important;
             }
             
             html body #app #game-header {
@@ -130,14 +130,30 @@
             }
             
             html body #app .mobile-bottom-bar {
-                gap: 1px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 2px !important;
+                padding: 2px !important;
+            }
+            
+            html body #app .mobile-bottom-row {
+                display: flex !important;
+                justify-content: space-around !important;
+                gap: 2px !important;
             }
             
             html body #app .mobile-bottom-btn {
-                min-height: 24px !important;
-                padding: 1px !important;
+                flex: 1 !important;
+                min-height: 22px !important;
+                padding: 2px !important;
                 border-radius: 4px !important;
                 background: rgba(30, 27, 75, 0.85) !important;
+                border: 1px solid #6366f1 !important;
+                color: #fbbf24 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 1px !important;
             }
             
             html body #app .mobile-bottom-btn span.icon {
@@ -147,21 +163,6 @@
             html body #app .mobile-bottom-btn span.text {
                 font-size: 7px !important;
                 color: #fbbf24 !important;
-            }
-            
-            html body #app .mobile-menu-toggle {
-                width: 30px !important;
-                height: 30px !important;
-                font-size: 14px !important;
-                bottom: 10px !important;
-                right: 10px !important;
-            }
-            
-            html body #app .mobile-menu-item {
-                width: 26px !important;
-                height: 26px !important;
-                font-size: 12px !important;
-                color: white !important;
             }
         }
         
@@ -201,14 +202,6 @@
         <main id="game-main">
             <div id="sidebar-left" class="sidebar">
                 <div id="player-stats-panel" class="panel"></div>
-                <div id="sidebar-buttons" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-                    <button id="character-btn" class="btn btn-warning">👤 角色信息</button>
-                    <button id="map-btn" class="btn btn-primary">🗺️ 地图</button>
-                    <button id="dungeon-btn" class="btn btn-primary">🏔️ 秘境</button>
-                    <button id="inventory-btn" class="btn btn-primary">🎒 背包</button>
-                    <button id="skill-btn" class="btn btn-primary">⚡ 技能</button>
-                    <button id="acquaintance-btn" class="btn btn-primary">👥 熟人</button>
-                </div>
             </div>
             <div id="game-content">
                 <div id="scene-description"></div>
@@ -625,46 +618,38 @@
         </div>
     </div>
 
-    <!-- ===================== 手机端浮动菜单 ===================== -->
+    <!-- ===================== 手机端底部导航 ===================== -->
     <div id="mobile-float-menu">
         <!-- 底部快捷栏 -->
         <div class="mobile-bottom-bar">
-            <button class="mobile-bottom-btn" onclick="toggleSidebar('left')">
-                <span class="icon">👤</span>
-                <span class="text">角色</span>
-            </button>
-            <button class="mobile-bottom-btn" onclick="ui.showMapModal()">
-                <span class="icon">🗺️</span>
-                <span class="text">地图</span>
-            </button>
-            <button class="mobile-bottom-btn" onclick="ui.showInventoryModal()">
-                <span class="icon">🎒</span>
-                <span class="text">背包</span>
-            </button>
-            <button class="mobile-bottom-btn" onclick="ui.showSkillModal()">
-                <span class="icon">⚡</span>
-                <span class="text">技能</span>
-            </button>
-            <button class="mobile-bottom-btn" onclick="game.saveGame()">
-                <span class="icon">💾</span>
-                <span class="text">存档</span>
-            </button>
-        </div>
-
-        <!-- 悬浮菜单按钮 -->
-        <div class="mobile-menu-toggle" id="mobile-menu-toggle" onclick="toggleMobileMenu()">
-            ☰
-        </div>
-
-        <!-- 悬浮菜单项 -->
-        <div class="mobile-menu-items" id="mobile-menu-items">
-            <div class="mobile-menu-item" onclick="ui.showCharacterModal()">👤</div>
-            <div class="mobile-menu-item" onclick="ui.showMapModal()">🗺️</div>
-            <div class="mobile-menu-item" onclick="ui.showDungeonModal()">🏔️</div>
-            <div class="mobile-menu-item" onclick="ui.showInventoryModal()">🎒</div>
-            <div class="mobile-menu-item" onclick="ui.showSkillModal()">⚡</div>
-            <div class="mobile-menu-item" onclick="toggleSidebar('right')">👥</div>
-            <div class="mobile-menu-item" onclick="game.saveGame()">💾</div>
+            <div class="mobile-bottom-row">
+                <button class="mobile-bottom-btn" onclick="ui.showCharacterModal()">
+                    <span class="icon">👤</span>
+                    <span class="text">角色</span>
+                </button>
+                <button class="mobile-bottom-btn" onclick="ui.showMapModal()">
+                    <span class="icon">🗺️</span>
+                    <span class="text">地图</span>
+                </button>
+                <button class="mobile-bottom-btn" onclick="ui.showDungeonModal()">
+                    <span class="icon">&#x1F3D4;&#xFE0F;</span>
+                    <span class="text">秘境</span>
+                </button>
+            </div>
+            <div class="mobile-bottom-row">
+                <button class="mobile-bottom-btn" onclick="ui.showInventoryModal()">
+                    <span class="icon">🎒</span>
+                    <span class="text">背包</span>
+                </button>
+                <button class="mobile-bottom-btn" onclick="ui.showSkillModal()">
+                    <span class="icon">⚡</span>
+                    <span class="text">技能</span>
+                </button>
+                <button class="mobile-bottom-btn" onclick="ui.showAcquaintanceModal()">
+                    <span class="icon">👥</span>
+                    <span class="text">熟人</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -673,9 +658,7 @@
     <script src="js/game.js"></script>
     <script src="js/ui.js"></script>
     <script>
-        // ===================== 手机端菜单功能 =====================
-        
-        // 切换侧边栏显示
+        // ===================== 手机端侧边栏切换 =====================
         function toggleSidebar(side) {
             const sidebar = document.getElementById(`sidebar-${side}`);
             if (sidebar) {
@@ -683,39 +666,12 @@
             }
         }
         
-        // 切换浮动菜单显示
-        let mobileMenuOpen = false;
-        function toggleMobileMenu() {
-            mobileMenuOpen = !mobileMenuOpen;
-            const menuItems = document.getElementById('mobile-menu-items');
-            const toggleBtn = document.getElementById('mobile-menu-toggle');
-            
-            if (mobileMenuOpen) {
-                menuItems.classList.add('show');
-                toggleBtn.textContent = '✕';
-            } else {
-                menuItems.classList.remove('show');
-                toggleBtn.textContent = '☰';
-            }
-        }
-        
-        // 点击页面其他地方关闭菜单
-        document.addEventListener('click', function(e) {
-            const menu = document.getElementById('mobile-float-menu');
-            if (mobileMenuOpen && !menu.contains(e.target)) {
-                toggleMobileMenu();
-            }
-        });
-        
-        // 检测是否为移动设备
         function isMobileDevice() {
             return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
                 || window.innerWidth <= 768;
         }
         
-        // 页面加载时的处理
         document.addEventListener('DOMContentLoaded', function() {
-            // 如果是移动设备，调整一些默认设置
             if (isMobileDevice()) {
                 console.log('检测到移动设备，应用手机端优化');
             }
