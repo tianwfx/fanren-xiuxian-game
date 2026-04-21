@@ -843,25 +843,62 @@ body {
 
 /* 手机端断点 - 768px以下竖屏 */
 @media (max-width: 768px) and (orientation: portrait) {
-    /* 主布局改为垂直排列 */
+    /* 主布局改为垂直排列，固定高度 */
     #game-main {
         flex-direction: column !important;
-        padding: 10px !important;
-        overflow-y: auto;
+        padding: 0 !important;
+        height: 100vh !important;
+        overflow: hidden !important;
     }
     
-    /* 侧边栏优化 */
+    /* 游戏内容区域 - 占据剩余空间 */
+    #game-content {
+        flex: 1 !important;
+        padding: 4px !important;
+        overflow-y: auto !important;
+        padding-bottom: 56px !important;
+    }
+    
+    /* Header - 水平排列更紧凑 */
+    #game-header {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        padding: 4px 6px !important;
+        gap: 2px !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+    
+    #game-header h1 {
+        font-size: 14px !important;
+        margin: 0 !important;
+    }
+    
+    #time-display {
+        font-size: 10px !important;
+    }
+    
+    /* 存档和退出按钮 */
+    #game-controls {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 4px !important;
+    }
+    
+    #save-btn, #quit-btn {
+        padding: 3px 8px !important;
+        font-size: 10px !important;
+        min-height: 26px !important;
+    }
+    
+    /* 侧边栏 */
     #sidebar-left, #sidebar-right {
         width: 100% !important;
-        max-height: 240px;
-        border-right: none !important;
-        border-left: none !important;
+        max-height: 180px;
+        padding: 8px !important;
         border-bottom: 2px solid #4c1d95 !important;
-        padding: 12px !important;
-        margin-bottom: 10px;
     }
     
-    /* 默认隐藏侧边栏，通过菜单按钮切换 */
     #sidebar-left, #sidebar-right {
         display: none;
     }
@@ -870,62 +907,40 @@ body {
         display: block;
     }
     
-    /* Header优化 */
-    #game-header {
-        flex-direction: column;
-        padding: 10px 14px;
-        gap: 8px;
-    }
-    
-    #game-header h1 {
-        font-size: 20px !important;
-    }
-    
-    /* 玩家信息优化 */
-    #player-info {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px;
-    }
-    
-    .stat-bar .bar {
-        width: 110px !important;
-        height: 14px !important;
-    }
-    
-    .stat-bar {
-        gap: 8px !important;
-    }
-    
-    .stat-bar label {
-        font-size: 13px !important;
-    }
-    
-    /* 游戏内容区域 */
-    #game-content {
-        padding: 12px !important;
-    }
-    
+    /* 场景描述 */
     #scene-description {
-        padding: 14px !important;
-        margin-bottom: 12px !important;
+        padding: 6px 8px !important;
+        margin-bottom: 4px !important;
     }
     
     #scene-description h2 {
-        font-size: 18px !important;
-        margin-bottom: 10px !important;
+        font-size: 13px !important;
+        margin-bottom: 3px !important;
     }
     
     #scene-description p {
-        font-size: 15px !important;
-        line-height: 1.7 !important;
+        font-size: 12px !important;
+        line-height: 1.5 !important;
     }
     
-    /* 动作按钮网格布局 */
+    /* 按钮 */
+    .btn {
+        padding: 5px 10px !important;
+        font-size: 12px !important;
+        min-height: 34px !important;
+        border-radius: 5px !important;
+    }
+    
+    #sidebar-buttons .btn {
+        padding: 6px 10px !important;
+        font-size: 11px !important;
+    }
+    
+    /* 动作按钮网格 */
     #action-buttons {
         display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 10px !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 4px !important;
     }
     
     #action-buttons .btn {
@@ -933,210 +948,180 @@ body {
         margin: 0 !important;
     }
     
-    /* 按钮尺寸优化 */
-    .btn {
-        padding: 12px 18px !important;
-        font-size: 15px !important;
-        min-height: 50px !important;
-        border-radius: 10px !important;
+    /* 状态栏 */
+    .stat-bar {
+        gap: 3px !important;
     }
     
-    /* 侧边栏按钮优化 */
-    #sidebar-buttons .btn {
-        padding: 12px 16px !important;
+    .stat-bar .bar {
+        width: 70px !important;
+        height: 6px !important;
+    }
+    
+    .stat-bar label {
+        font-size: 10px !important;
+    }
+    
+    /* 字体 */
+    body, p {
+        font-size: 12px !important;
+        line-height: 1.5 !important;
+    }
+    
+    h2 {
         font-size: 14px !important;
+    }
+    
+    h3 {
+        font-size: 12px !important;
+    }
+    
+    /* 消息日志 */
+    #message-log {
+        padding: 6px !important;
+    }
+    
+    .log-message {
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+        margin-bottom: 2px !important;
     }
     
     /* 模态框 */
     .modal-content {
-        width: 94% !important;
-        max-width: none !important;
-        padding: 18px !important;
-        border-radius: 14px !important;
-        max-height: 88vh !important;
+        width: 95% !important;
+        padding: 12px !important;
+        border-radius: 10px !important;
+        max-height: 85vh !important;
     }
     
-    /* 字体大小调整 */
-    body, p {
+    .modal-content h1 {
+        font-size: 18px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .modal-content h2 {
         font-size: 15px !important;
+        margin-bottom: 8px !important;
     }
     
-    h2 {
-        font-size: 20px !important;
-    }
-    
-    h3 {
-        font-size: 16px !important;
-    }
-    
-    /* 战斗界面优化 */
+    /* 战斗界面 */
     #battle-screen .modal-content,
     #combat-screen .modal-content {
         width: 98% !important;
-        max-width: none !important;
-        padding: 14px !important;
-        border-radius: 10px !important;
-    }
-    
-    /* 战斗敌人和玩家区域垂直布局 */
-    #battle-screen [style*="display: flex"][style*="justify-content: space-between"] {
-        flex-direction: column !important;
-        gap: 14px !important;
-    }
-    
-    /* 战斗技能按钮网格布局 */
-    #battle-actions, #combat-actions {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 10px !important;
-    }
-    
-    #battle-actions .btn, #combat-actions .btn {
-        flex: none !important;
-        width: 100% !important;
-    }
-    
-    /* 快捷键改为4x2布局 */
-    #battle-hotkeys, #combat-hotkeys {
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 8px !important;
-    }
-    
-    .hotkey-slot {
-        min-height: 52px !important;
-        padding: 8px !important;
-    }
-    
-    .hotkey-slot span {
-        font-size: 11px !important;
-    }
-    
-    .hotkey-skill {
-        font-size: 11px !important;
-    }
-    
-    /* 战斗日志可滚动 */
-    #battle-log, #combat-log {
-        max-height: 140px !important;
-        overflow-y: auto !important;
         padding: 10px !important;
     }
     
-    /* 物品槽位优化 */
+    #battle-hotkeys, #combat-hotkeys {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 4px !important;
+    }
+    
+    .hotkey-slot {
+        min-height: 40px !important;
+        padding: 5px !important;
+    }
+    
+    .hotkey-slot span {
+        font-size: 9px !important;
+    }
+    
+    .hotkey-skill {
+        font-size: 9px !important;
+    }
+    
+    #battle-log, #combat-log {
+        max-height: 80px !important;
+    }
+    
+    /* 物品槽位 */
     .item-slot {
-        padding: 12px !important;
-        font-size: 14px !important;
-        margin: 8px 0 !important;
+        padding: 8px !important;
+        font-size: 12px !important;
+        margin: 4px 0 !important;
     }
     
-    /* 地图位置优化 */
     .map-location {
-        padding: 12px !important;
-        font-size: 14px !important;
-        margin: 8px 0 !important;
+        padding: 8px !important;
+        font-size: 12px !important;
+        margin: 4px 0 !important;
     }
     
-    /* 消息日志优化 */
-    #message-log {
-        padding: 12px !important;
-        max-height: 200px;
-    }
-    
-    /* 输入框优化 */
+    /* 输入框 */
     #player-name-input {
         width: 100% !important;
-        padding: 14px 18px !important;
-        font-size: 15px !important;
+        padding: 10px 14px !important;
+        font-size: 14px !important;
     }
     
-    /* 角色创建步骤优化 */
-    .step-content,
-    #native-place-options,
-    #personality-options {
-        grid-template-columns: 1fr !important;
-        gap: 12px !important;
-    }
-    
+    /* 角色创建 */
     .birth-option {
-        padding: 12px !important;
-        margin: 10px 0 !important;
+        padding: 8px !important;
+        margin: 6px 0 !important;
     }
     
     .birth-option h3 {
-        font-size: 15px !important;
-    }
-    
-    .birth-option p {
         font-size: 13px !important;
     }
     
-    /* 浮动菜单按钮显示 */
-    #mobile-float-menu {
-        display: block !important;
-    }
-    
-    /* 隐藏一些在手机上不需要的元素 */
-    #game-controls {
-        flex-wrap: wrap;
-        justify-content: center;
+    .birth-option p {
+        font-size: 11px !important;
     }
     
     /* 时间显示 */
     #time-display {
-        font-size: 13px !important;
+        font-size: 10px !important;
     }
     
     /* 面板标题 */
     .sidebar h3 {
-        font-size: 15px !important;
-        margin-bottom: 12px !important;
-        padding-bottom: 8px !important;
-    }
-    
-    /* 模态框标题 */
-    .modal-content h1 {
-        font-size: 22px !important;
-        margin-bottom: 16px !important;
-    }
-    
-    .modal-content h2 {
-        font-size: 18px !important;
-        margin-bottom: 18px !important;
-    }
-    
-    /* 关闭按钮 */
-    .modal-content .btn-secondary {
-        padding: 8px 14px !important;
         font-size: 13px !important;
-        min-height: 36px !important;
+        margin-bottom: 8px !important;
+        padding-bottom: 5px !important;
     }
     
     /* NPC头像 */
     .npc-avatar {
-        width: 64px !important;
-        height: 64px !important;
-        font-size: 30px !important;
-        margin-bottom: 14px !important;
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 24px !important;
+        margin-bottom: 10px !important;
     }
     
     /* 登录界面 */
     .start-game-title {
-        font-size: 26px !important;
+        font-size: 22px !important;
     }
     
     .start-subtitle {
-        font-size: 14px !important;
-        margin-bottom: 35px !important;
+        font-size: 12px !important;
+        margin-bottom: 25px !important;
     }
     
     .start-btn {
-        padding: 16px 32px !important;
-        font-size: 15px !important;
-        min-height: 52px !important;
+        padding: 12px 24px !important;
+        font-size: 13px !important;
+        min-height: 42px !important;
     }
 }
 
-/* 超小屏幕 - 480px以下（竖屏） */
+/* 超小屏幕 - 480px以下 */
 @media (max-width: 480px) and (orientation: portrait) {
+    #game-header h1 {
+        font-size: 12px !important;
+    }
+    
+    #save-btn, #quit-btn {
+        padding: 2px 6px !important;
+        font-size: 9px !important;
+        min-height: 22px !important;
+    }
+    
+    .btn {
+        font-size: 11px !important;
+        min-height: 30px !important;
+    }
+}
     /* 进一步优化 */
     #game-header h1 {
         font-size: 12px !important;
