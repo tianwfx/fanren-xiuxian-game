@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>凡人修仙录 - 文字修仙MUD</title>
-    <link rel="stylesheet" href="css/style.css?v=20250420">
+    <link rel="stylesheet" href="css/style.css?v=20250422">
     <style>
         /* ============== 手机端强制样式（直接嵌入HTML）============== */
         @media (max-width: 768px) {
@@ -33,20 +32,20 @@
             html body #app #game-content {
                 flex: none !important;
                 width: 100% !important;
-                padding: 15px !important;
+                padding: 5px !important;
             }
             
             /* 强制按钮网格 */
             html body #app #action-buttons {
                 display: grid !important;
                 grid-template-columns: 1fr 1fr !important;
-                gap: 10px !important;
+                gap: 4px !important;
             }
             
             /* 强制Header垂直 */
             html body #app #game-header {
                 flex-direction: column !important;
-                padding: 10px !important;
+                padding: 4px !important;
             }
             
             /* 强制显示手机菜单 */
@@ -61,7 +60,22 @@
             
             /* 强制按钮尺寸 */
             html body .btn {
-                min-height: 50px !important;
+                min-height: 34px !important;
+                font-size: 11px !important;
+                padding: 6px 10px !important;
+            }
+            
+            /* 强制字体 */
+            html body, html body p {
+                font-size: 11px !important;
+            }
+            
+            html body h2 {
+                font-size: 14px !important;
+            }
+            
+            html body h3 {
+                font-size: 12px !important;
             }
         }
         
@@ -69,6 +83,12 @@
         @media (max-width: 480px) {
             html body #app #action-buttons {
                 grid-template-columns: 1fr !important;
+                gap: 3px !important;
+            }
+            
+            html body .btn {
+                font-size: 10px !important;
+                min-height: 30px !important;
             }
         }
     </style>
