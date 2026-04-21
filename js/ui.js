@@ -5482,12 +5482,20 @@ class UI {
             });
         }
         
-        // 快捷键槽位点击事件
+        // 设置按钮点击事件
+        var hotkeySetupBtn = document.getElementById('hotkey-setup-btn');
+        if (hotkeySetupBtn) {
+            hotkeySetupBtn.addEventListener('click', () => {
+                this.showHotkeySetupModal();
+            });
+        }
+        
+        // 快捷键槽位点击事件 - 点击直接使用技能
         const hotkeySlots = document.querySelectorAll('.hotkey-slot');
         hotkeySlots.forEach(slot => {
             slot.addEventListener('click', () => {
                 const slotNumber = slot.dataset.slot;
-                this.showHotkeySetModal(slotNumber);
+                this.useHotkeySkill(parseInt(slotNumber));
             });
         });
         
@@ -5648,6 +5656,187 @@ class UI {
         }
         
         modal.classList.remove('hidden');
+    }
+    
+    // 显示快捷键设置模态框（新版本：点击槽位来添加技能）
+    showHotkeySetupModal() {
+        const modal = document.getElementById('hotkey-set-modal');
+        const content = document.getElementById('hotkey-set-content');
+        const player = this.game.player;
+        
+        let html = '<div style="text-align: center;">';
+        html += '<h3 style="color: #fbbf24; margin-bottom: 20px;">点击快捷键槽位来添加/更换技能</h3>';
+        html += '<p style="color: #9ca3af; margin-bottom: 20px; font-size: 13px;">点击下方已设置的槽位可更换技能，点击空白槽位可添加新技能</p>';
+        
+        html += '<div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; margin-bottom: 20px;">';
+        for (let i = 1; i <= 8; i++) {
+            const skillName = player.hotkeys ? player.hotkeys[i] : null;
+            let skill = null;
+            if (skillName) {
+                skill = GAME_DATA.SKILLS[skillName];
+                if (!skill && player.sanxiuActiveSkills && player.sanxiuActiveSkills.includes(skillName)) {
+                    skill = GAME_DATA.SANXIU_ACTIVE_SKILLS[skillName];
+                }
+            }
+            
+            const hasSkill = skill && skillName;
+            const bgColor = hasSkill ? 'rgba(139, 92, 246, 0.3)' : 'rgba(0, 0, 0, 0.3)';
+            const borderColor = hasSkill ? '#8b5cf6' : '#6b7280';
+            const textColor = hasSkill ? '#fbbf24' : '#6b7280';
+            
+            html += `<div class="hotkey-setup-slot" data-slot="${i}" style="
+                background: ${bgColor};
+                border: 2px solid ${borderColor};
+                border-radius: 8px;
+                padding: 10px 5px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                min-height: 60px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            ">
+                <div style="font-size: 14px; font-weight: bold; color: #fbbf24; margin-bottom: 4px;">${i}</div>
+                <div style="font-size: 12px; color: ${textColor}; word-break: break-all;">${hasSkill ? skill.name : '空'}</div>
+            </div>`;
+        }
+        html += '</div>';
+        html += '</div>';
+        
+        content.innerHTML = html;
+        
+        // 绑定点击事件
+        const setupSlots = content.querySelectorAll('.hotkey-setup-slot');
+        setupSlots.forEach(slot => {
+            slot.addEventListener('click', () => {
+                const slotNumber = slot.dataset.slot;
+                this.showHotkeySelectModal(slotNumber);
+            });
+            
+            // 悬停效果
+            slot.addEventListener('mouseenter', () => {
+                slot.style.borderColor = '#fbbf24';
+                slot.style.boxShadow = '0 0 10px rgba(251, 191, 36, 0.3)';
+            });
+            slot.addEventListener('mouseleave', () => {
+                const i = slot.dataset.slot;
+                const skillName = player.hotkeys ? player.hotkeys[i] : null;
+                const hasSkill = skillName;
+                slot.style.borderColor = hasSkill ? '#8b5cf6' : '#6b7280';
+                slot.style.boxShadow = 'none';
+            });
+        });
+        
+        modal.classList.remove('hidden');
+    }
+    
+    // 显示技能选择模态框（用于设置快捷键）
+    showHotkeySelectModal(slotNumber) {
+        const modal = document.getElementById('hotkey-set-modal');
+        const content = document.getElementById('hotkey-set-content');
+        const player = this.game.player;
+        
+        let html = '<div>';
+        html += `<h3 style="color: #fbbf24; margin-bottom: 15px; text-align: center;">为快捷键 ${slotNumber} 选择技能</h3>`;
+        html += `<p style="color: #9ca3af; margin-bottom: 15px; text-align: center; font-size: 13px;">选择技能后将自动设置到快捷键 ${slotNumber}</p>`;
+        
+        // 清除当前快捷键按钮
+        html += `<div style="text-align: center; margin-bottom: 15px;">
+            <button class="btn btn-danger" id="clear-hotkey-btn" style="padding: 6px 20px; font-size: 12px;">清除快捷键 ${slotNumber}</button>
+        </div>`;
+        
+        // 门派技能
+        html += '<h4 style="color: #a78bfa; margin: 15px 0 10px;">门派技能</h4>';
+        html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 300px; overflow-y: auto; padding: 5px;">';
+        if (player.skills && player.skills.length > 0) {
+            player.skills.forEach(skillName => {
+                const skill = GAME_DATA.SKILLS[skillName];
+                if (!skill || skill.type === 'passive') return;
+                
+                html += `<div class="skill-select-item" data-skill="${skillName}" style="
+                    background: rgba(0, 0, 0, 0.3);
+                    border: 1px solid #4b5563;
+                    border-radius: 6px;
+                    padding: 8px;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                ">
+                    <div style="font-weight: bold; color: #fbbf24; font-size: 13px;">${skill.name}</div>
+                    <div style="font-size: 11px; color: #60a5fa;">灵力: ${skill.mpCost}</div>
+                    <div style="font-size: 11px; color: #9ca3af; margin-top: 3px;">${skill.description || '暂无描述'}</div>
+                </div>`;
+            });
+        } else {
+            html += '<p style="color: #6b7280; grid-column: 1 / -1; text-align: center;">暂无门派技能</p>';
+        }
+        html += '</div>';
+        
+        // 散修技能
+        if (player.sanxiuActiveSkills && player.sanxiuActiveSkills.length > 0) {
+            html += '<h4 style="color: #a78bfa; margin: 15px 0 10px;">散修技能</h4>';
+            html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 200px; overflow-y: auto; padding: 5px;">';
+            player.sanxiuActiveSkills.forEach(skillId => {
+                const skill = GAME_DATA.SANXIU_ACTIVE_SKILLS[skillId];
+                if (!skill || skill.type === 'passive') return;
+                
+                html += `<div class="skill-select-item" data-skill="${skillId}" style="
+                    background: rgba(0, 0, 0, 0.3);
+                    border: 1px solid #4b5563;
+                    border-radius: 6px;
+                    padding: 8px;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                ">
+                    <div style="font-weight: bold; color: #fbbf24; font-size: 13px;">${skill.name} (散修)</div>
+                    <div style="font-size: 11px; color: #60a5fa;">灵力: ${skill.mpCost}</div>
+                    <div style="font-size: 11px; color: #9ca3af; margin-top: 3px;">${skill.description || '暂无描述'}</div>
+                </div>`;
+            });
+            html += '</div>';
+        }
+        
+        html += '</div>';
+        content.innerHTML = html;
+        
+        // 绑定技能选择事件
+        const skillItems = content.querySelectorAll('.skill-select-item');
+        skillItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const skillName = item.dataset.skill;
+                this.setHotkeySkill(slotNumber, skillName);
+                this.showHotkeySetupModal(); // 返回设置界面
+            });
+            
+            item.addEventListener('mouseenter', () => {
+                item.style.borderColor = '#8b5cf6';
+                item.style.background = 'rgba(139, 92, 246, 0.2)';
+            });
+            item.addEventListener('mouseleave', () => {
+                item.style.borderColor = '#4b5563';
+                item.style.background = 'rgba(0, 0, 0, 0.3)';
+            });
+        });
+        
+        // 绑定清除事件
+        var clearBtn = document.getElementById('clear-hotkey-btn');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                this.clearHotkey(slotNumber);
+                this.showHotkeySetupModal();
+            });
+        }
+        
+        modal.classList.remove('hidden');
+    }
+    
+    // 清除快捷键
+    clearHotkey(slotNumber) {
+        if (this.game.player.hotkeys && this.game.player.hotkeys[slotNumber]) {
+            delete this.game.player.hotkeys[slotNumber];
+            this.updateHotkeys();
+        }
     }
     
     // 设置快捷键技能

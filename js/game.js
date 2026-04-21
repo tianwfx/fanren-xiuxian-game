@@ -3517,40 +3517,28 @@ class Game {
         
         try {
             // 秘境掉落低阶炼丹配方
-            this.log('系统', '检查炼丹配方掉落...', 'info');
-            
             if (GAME_DATA.ALCHEMY && GAME_DATA.ALCHEMY.RECIPES) {
                 // 获取秘境的境界要求
                 const requiredRealm = dg.requireRealm;
                 const realmIndex = GAME_DATA.REALMS.findIndex(r => r.name === requiredRealm);
-                
-                this.log('系统', `秘境境界：${requiredRealm}，境界索引：${realmIndex}`, 'info');
                 
                 // 收集符合秘境境界的低阶配方
                 const availableRecipes = [];
                 for (const [recipeName, recipe] of Object.entries(GAME_DATA.ALCHEMY.RECIPES)) {
                     const recipeRealmIndex = GAME_DATA.REALMS.findIndex(r => r.name === recipe.requiredRealm);
                     
-                    this.log('系统', `检查配方：${recipeName}，要求境界：${recipe.requiredRealm}，境界索引：${recipeRealmIndex}`, 'info');
-                    
                     // 只掉落炼气期、筑基期、金丹期的配方
                     if (recipeRealmIndex <= 2 && recipeRealmIndex <= realmIndex) {
                         // 检查玩家是否已经会这个配方
                         if (!this.player.knownRecipes || !this.player.knownRecipes.includes(recipeName)) {
                             availableRecipes.push({ name: recipeName, recipe: recipe });
-                        } else {
-                            this.log('系统', `玩家已会配方：${recipeName}，跳过`, 'info');
                         }
                     }
                 }
                 
-                this.log('系统', `可用配方数量：${availableRecipes.length}`, 'info');
-                
                 // 有一定概率掉落配方
                 const dropChance = dg.difficulty === 'hard' ? 0.4 : 0.2; // 困难模式40%概率，普通模式20%
                 const randomValue = Math.random();
-                
-                this.log('系统', `掉落概率：${(dropChance * 100).toFixed(0)}%，随机值：${randomValue.toFixed(4)}`, 'info');
                 
                 if (availableRecipes.length > 0 && randomValue < dropChance) {
                     const randomRecipe = availableRecipes[Math.floor(Math.random() * availableRecipes.length)];
@@ -3560,17 +3548,10 @@ class Game {
                     this.player.knownRecipes.push(randomRecipe.name);
                     this.log('秘境', `获得炼丹配方：${randomRecipe.name}！`, 'success');
                     rewards.items.push({ name: randomRecipe.name, type: 'recipe' });
-                } else if (availableRecipes.length === 0) {
-                    this.log('系统', '没有可掉落的配方', 'info');
-                } else {
-                    this.log('系统', '本次未掉落配方', 'info');
                 }
-            } else {
-                this.log('系统', 'GAME_DATA.ALCHEMY 或 GAME_DATA.ALCHEMY.RECIPES 不存在', 'error');
             }
         } catch (e) {
             console.error('处理炼丹配方掉落出错:', e);
-            this.log('系统', `处理炼丹配方掉落出错：${e.message}`, 'error');
         }
         
         try {
